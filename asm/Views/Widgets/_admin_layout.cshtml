@@ -1,0 +1,601 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using asm.Areas.Identity.Data
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Basic Page Info -->
+    <meta charset="utf-8">
+    <title>@ViewData["Title"] - Emporio Armani - Administrator</title>
+
+    <!-- Site favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="~/admintemplate/vendors/images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/admintemplate/vendors/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/admintemplate/vendors/images/favicon-16x16.png">
+    @* <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" *@
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="~/admintemplate/vendors/styles/core.css">
+    <link rel="stylesheet" type="text/css" href="~/admintemplate/vendors/styles/icon-font.min.css">
+    <link rel="stylesheet" type="text/css"
+        href="~/admintemplate/src/plugins/datatables/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css"
+        href="~/admintemplate/src/plugins/datatables/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="~/admintemplate/vendors/styles/style.css">
+    <link rel="stylesheet" type="text/css" href="~/admintemplate/src/plugins/dropzone/src/dropzone.css">
+    <link rel="stylesheet" type="text/css" href="~/admintemplate/src/plugins/sweetalert2/sweetalert2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.css">
+    <!-- Slick Slider css -->
+    <link rel="stylesheet" type="text/css" href="~/admintemplate/src/plugins/slick/slick.css">
+    @* <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> *@
+    <!-- Script xử lý upload ảnh -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Khi input chọn ảnh thay đổi
+            $("#images").change(function () {
+                $("#image-preview").html(""); // Xoá ảnh cũ
+                var total_files = $(this).get(0).files.length;
+                for (var i = 0; i < total_files; i++) {
+                    var file = $(this).get(0).files[i];
+                    if (file) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $("#image-preview").append('<div class="col-md-3"><div class="image-container"><img src="' + e.target.result + '" alt="">');
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+        });
+    </script>
+    <style type="text/css">
+        .image-container {
+            border: 2px dashed #ccc;
+            width: 220px;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .image-container span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ccc;
+            font-size: 1.2rem;
+            font-weight: bold;
+            pointer-events: none;
+        }
+
+        .image-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 10px;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* min-height: 100%;
+        min-width: 100%; */
+            max-width: 200px;
+            max-height: 200px;
+        }
+
+        .delete-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: #000000;
+            font-size: 20px;
+            text-shadow: 1px 1px 1px #000;
+            opacity: 0.8;
+            z-index: 10;
+            transition: opacity 0.3s;
+        }
+
+        .delete-image:hover {
+            opacity: 1;
+            text-decoration: none;
+        }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119386393-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-119386393-1');
+    </script>
+</head>
+
+<body>
+    <!-- <div class="pre-loader">
+        <div class="pre-loader-box">
+            <div class="loader-logo"><img src="~/admintemplate/vendors/images/deskapp-logo.svg" alt=""></div>
+            <div class='loader-progress' id="progress_div">
+                <div class='bar' id='bar1'></div>
+            </div>
+            <div class='percent' id='percent1'>0%</div>
+            <div class="loading-text">
+                Loading...
+            </div>
+        </div>
+    </div> -->
+
+    <div class="header">
+        <div class="header-left">
+            <div class="menu-icon dw dw-menu"></div>
+            <div class="search-toggle-icon dw dw-search2" data-toggle="header_search"></div>
+        </div>
+        <div class="header-right">
+            <div class="dashboard-setting user-notification">
+                <div class="dropdown">
+                    <a class="dropdown-toggle no-arrow" href="javascript:;" data-toggle="right-sidebar">
+                        <i class="dw dw-settings2"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="user-info-dropdown">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    var userName = User.Identity?.Name;
+                    @* var user = await UserManager.FindByNameAsync(userName); *@
+                    var user = await UserManager.FindByNameAsync(userName);
+
+                    // Tìm thấy người dùng, tiếp tục xử lý.
+                    var firstname = user?.FirstName ?? "NA";
+                    var lastname = user?.LastName ?? "NA";
+                    var image = user?.Image ?? "NA";
+                    var ID = user?.Id ?? "NA";
+                    <div class="dropdown">
+                        <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                            <span class="user-icon">
+                                <img src="@Url.Content(image)" alt="">
+                            </span>
+                            <span class="user-name">@firstname @lastname</span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
+
+                            <a class="dropdown-item" asp-action="Profile" asp-controller="_User" asp-route-userId="@ID"><i
+                                    class="dw dw-user1"></i> Profile</a>
+
+                            <a class="dropdown-item" asp-action="Profile" asp-controller="_User"><i class="dw dw-help"></i>
+                                Help</a>
+                            <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout"
+                                asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <a href="#" class="dropdown-item" id="logoutLink"><i class="dw dw-logout"></i> Log Out</a>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="right-sidebar">
+        <div class="sidebar-title">
+            <h3 class="weight-600 font-16 text-blue">
+                Layout Settings
+                <span class="btn-block font-weight-400 font-12">User Interface Settings</span>
+            </h3>
+            <div class="close-sidebar" data-toggle="right-sidebar-close">
+                <i class="icon-copy ion-close-round"></i>
+            </div>
+        </div>
+        <div class="right-sidebar-body customscroll">
+            <div class="right-sidebar-body-content">
+                <h4 class="weight-600 font-18 pb-10">Header Background</h4>
+                <div class="sidebar-btn-group pb-30 mb-10">
+                    <a href="javascript:void(0);" class="btn btn-outline-primary header-white active">White</a>
+                    <a href="javascript:void(0);" class="btn btn-outline-primary header-dark">Dark</a>
+                </div>
+
+                <h4 class="weight-600 font-18 pb-10">Sidebar Background</h4>
+                <div class="sidebar-btn-group pb-30 mb-10">
+                    <a href="javascript:void(0);" class="btn btn-outline-primary sidebar-light ">White</a>
+                    <a href="javascript:void(0);" class="btn btn-outline-primary sidebar-dark active">Dark</a>
+                </div>
+
+                <h4 class="weight-600 font-18 pb-10">Menu Dropdown Icon</h4>
+                <div class="sidebar-radio-group pb-10 mb-10">
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="sidebaricon-1" name="menu-dropdown-icon" class="custom-control-input"
+                            value="icon-style-1" checked="">
+                        <label class="custom-control-label" for="sidebaricon-1"><i class="fa fa-angle-down"></i></label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="sidebaricon-2" name="menu-dropdown-icon" class="custom-control-input"
+                            value="icon-style-2">
+                        <label class="custom-control-label" for="sidebaricon-2"><i class="ion-plus-round"></i></label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="sidebaricon-3" name="menu-dropdown-icon" class="custom-control-input"
+                            value="icon-style-3">
+                        <label class="custom-control-label" for="sidebaricon-3">
+                            <i class="fa fa-angle-double-right"></i>
+                        </label>
+                    </div>
+                </div>
+
+                <h4 class="weight-600 font-18 pb-10">Menu List Icon</h4>
+                <div class="sidebar-radio-group pb-30 mb-10">
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="sidebariconlist-1" name="menu-list-icon" class="custom-control-input"
+                            value="icon-list-style-1" checked="">
+                        <label class="custom-control-label" for="sidebariconlist-1">
+                            <i class="ion-minus-round"></i>
+                        </label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="sidebariconlist-2" name="menu-list-icon" class="custom-control-input"
+                            value="icon-list-style-2">
+                        <label class="custom-control-label" for="sidebariconlist-2">
+                            <i class="fa fa-circle-o" aria-hidden="true"></i>
+                        </label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="sidebariconlist-3" name="menu-list-icon" class="custom-control-input"
+                            value="icon-list-style-3">
+                        <label class="custom-control-label" for="sidebariconlist-3"><i class="dw dw-check"></i></label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="sidebariconlist-4" name="menu-list-icon" class="custom-control-input"
+                            value="icon-list-style-4" checked="">
+                        <label class="custom-control-label" for="sidebariconlist-4">
+                            <i class="icon-copy dw dw-next-2"></i>
+                        </label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="sidebariconlist-5" name="menu-list-icon" class="custom-control-input"
+                            value="icon-list-style-5">
+                        <label class="custom-control-label" for="sidebariconlist-5">
+                            <i class="dw dw-fast-forward-1"></i>
+                        </label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="sidebariconlist-6" name="menu-list-icon" class="custom-control-input"
+                            value="icon-list-style-6">
+                        <label class="custom-control-label" for="sidebariconlist-6"><i class="dw dw-next"></i></label>
+                    </div>
+                </div>
+
+                <div class="reset-options pt-30 text-center">
+                    <button class="btn btn-danger" id="reset-settings">Reset Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="left-side-bar">
+        <div class="brand-logo text-center">
+            <a href="index.html mt-3" style="width: 280px">
+                <img style="height: auto; width: 100%;" src="~/admintemplate/vendors/images/armani-logo-dark-2.png"
+                    alt="" class="dark-logo">
+                <img src="~/admintemplate/vendors/images/emporio-armani-white.png" alt="" class="light-logo">
+            </a>
+            <div class="close-sidebar" data-toggle="left-sidebar-close">
+                <i class="ion-close-round"></i>
+            </div>
+        </div>
+        <div class="menu-block customscroll">
+            <div class="sidebar-menu">
+                <ul id="accordion-menu">
+                    @*<li>
+                    <a href="" class="dropdown-toggle no-arrow custom-link" asp-area="" asp-controller="Dashboard"
+                    asp-action="">
+                    <span class="micon dw dw-house-1"></span><span class="mtext">Dashboard</span>
+                    </a>
+                    </li>*@
+                    <li>
+                        <a class="dropdown-toggle no-arrow custom-link" asp-area="" asp-controller="Dashboard"
+                            asp-action="Index">
+                            <span class="micon dw dw-analytics-4"></span><span class="mtext">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-toggle no-arrow custom-link" asp-area="" asp-controller="_user"
+                            asp-action="Index">
+                            <span class="micon dw dw-user-1"></span><span class="mtext">User</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-toggle no-arrow custom-link" asp-area="" asp-controller="_customer"
+                            asp-action="Index">
+                            <span class="micon ti-user"></span><span class="mtext">Customer</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-toggle no-arrow custom-link" asp-area="" asp-controller="_category"
+                            asp-action="Index">
+                            <span class="micon dw dw-notepad-1"></span><span class="mtext">Categories</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-toggle no-arrow custom-link" asp-area="" asp-controller="_product"
+                            asp-action="Index">
+                            <span class="micon dw dw-shopping-bag"></span><span class="mtext">Prouduct</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-toggle no-arrow custom-link" asp-area="" asp-controller="_size"
+                            asp-action="Index">
+                            <span class="micon dw dw-resize-2"></span><span class="mtext">Size</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-toggle no-arrow custom-link" asp-area="" asp-controller="_order"
+                            asp-action="Index">
+                            <span class="micon dw dw-shopping-cart-1"></span><span class="mtext">Order</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-toggle no-arrow custom-link" asp-area="" asp-controller="roles"
+                            asp-action="Index">
+                            <span class="micon dw dw-user-11"></span><span class="mtext">Roles</span>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                        <div class="sidebar-small-cap">Client</div>
+                    </li>
+                    <li>
+                        <a class="dropdown-toggle no-arrow custom-link" asp-controller="Home" asp-action="Index">
+                            <span class="micon dw dw-logout1"></span><span class="mtext">Back to Armani</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="mobile-menu-overlay"></div>
+    @RenderBody()
+    <!-- js -->
+    <script src="~/admintemplate/vendors/scripts/core.js"></script>
+    <script src="~/admintemplate/vendors/scripts/script.min.js"></script>
+    <script src="~/admintemplate/vendors/scripts/process.js"></script>
+    <script src="~/admintemplate/vendors/scripts/layout-settings.js"></script>
+    <script src="~/admintemplate/src/plugins/apexcharts/apexcharts.min.js"></script>
+    @* <script src="~/admintemplate/src/plugins/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/responsive.bootstrap4.min.js"></script> *@
+    <script src="~/admintemplate/vendors/scripts/dashboard3.js"></script>
+    <script src="~/admintemplate/src/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+    <script src="~/admintemplate/vendors/scripts/advanced-components.js"></script>
+    <!-- add sweet alert js & css in footer -->
+    <script src="~/admintemplate/src/plugins/sweetalert2/sweetalert2.all.js"></script>
+    <script src="~/admintemplate/src/plugins/sweetalert2/sweet-alert.init.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
+    <!-- buttons for Export datatable -->
+    @* <script src="~/admintemplate/src/plugins/datatables/js/dataTables.buttons.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/buttons.print.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/buttons.html5.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/buttons.flash.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/pdfmake.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/vfs_fonts.js"></script> *@
+    <!-- Datatable Setting js -->
+    <script src="~/admintemplate/vendors/scripts/datatable-setting.js"></script>
+    <!-- Slick Slider js -->
+    <script src="~/admintemplate/src/plugins/slick/slick.min.js"></script>
+    <!-- bootstrap-touchspin js -->
+    <script src="~/admintemplate/src/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+
+
+	<script src="~/admintemplate/src/plugins/apexcharts/apexcharts.min.js"></script>
+	<script src="~/admintemplate/vendors/scripts/apexcharts-setting.js"></script>
+
+
+
+
+    @* <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> *@
+    @* <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    var customLinks = document.querySelectorAll('.custom-link');
+    customLinks.forEach(function (link) {
+    link.addEventListener('click', function (event) {
+    event.preventDefault(); // Ngăn chặn chuyển hướng mặc định
+
+    // Lấy controller và action từ thuộc tính asp-controller và asp-action
+    var controller = link.getAttribute('asp-controller');
+    var action = link.getAttribute('asp-action');
+
+    // Tạo đường dẫn và chuyển hướng
+    var url = '/admin/' + controller + '/' + action;
+    window.location.href = url;
+    });
+    });
+    });
+    </script> *@
+    <script>
+        document.getElementById("logoutLink").addEventListener("click", function () {
+            document.getElementById("logoutForm").submit();
+        });
+    </script>
+    <script>Dropzone.autoDiscover = false;
+        $(".dropzone").dropzone({
+            addRemoveLinks: true,
+            removedfile: function (file) {
+                var name = file.name;
+                var _ref;
+                return (_ref = file.previewElement) != null ? _ref.parentNode.removeChild(file.previewElement) : void 0;
+            }
+        });</script>
+    <script src="~/admintemplate/src/plugins/dropzone/src/dropzone.js"></script>
+    <script>function confirmDelete() {
+            if (confirm("Do you want to delete this item?")) {
+                return true;
+            } else {
+                return false;
+            }
+        }</script>
+    @* bosung them *@
+    <script>
+        $('.sa-warning').click(function () {
+            var itemId = $(this).data('id');
+
+            swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(function (result) {
+                if (result.value) {
+                    // Người dùng đã xác nhận xoá, thực hiện hành động delete ở đây
+                    $.ajax({
+                        url: '@Url.Action("delete", "_category")/' + itemId,
+                        type: 'POST',
+                        success: function (data) {
+                            // Xử lý khi delete thành công
+                            swal('Deleted!', 'Your file has been deleted.', 'success')
+                                .then(function () {
+                                    // Chuyển hướng đến trang index sau khi xoá thành công
+                                    window.location.href = '@Url.Action("Index", "_category")';
+                                });
+                        },
+                        error: function (error) {
+                            // Xử lý khi có lỗi trong quá trình delete
+                            swal('Error!', 'An error occurred during delete.', 'error');
+                        }
+                    });
+                } else {
+                    // Người dùng đã cancel, không thực hiện hành động delete
+                    swal('Cancelled', 'Your file is safe :)', 'error');
+                }
+            });
+        });
+    </script>
+    <script>
+        $('.sa-errors-2').click(function () {
+            var pro_itemId = $(this).data('id');
+
+            swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(function (result) {
+                if (result.value) {
+                    // Người dùng đã xác nhận xoá, thực hiện hành động delete ở đây
+                    $.ajax({
+                        url: '@Url.Action("delete", "_product")/' + pro_itemId,
+                        type: 'POST',
+                        success: function (data) {
+                            // Xử lý khi delete thành công
+                            swal('Deleted!', 'Your file has been deleted.', 'success')
+                                .then(function () {
+                                    // Chuyển hướng đến trang index sau khi xoá thành công
+                                    window.location.href = '@Url.Action("Index", "_product")';
+                                });
+                        },
+                        error: function (error) {
+                            // Xử lý khi có lỗi trong quá trình delete
+                            swal('Error!', 'An error occurred during delete.', 'error');
+                        }
+                    });
+                } else {
+                    // Người dùng đã cancel, không thực hiện hành động delete
+                    swal('Cancelled', 'Your file is safe :)', 'error');
+                }
+            });
+        });
+    </script>
+    <script>
+        jQuery(document).ready(function () {
+            jQuery('.product-slider').slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                arrows: true,
+                infinite: true,
+                speed: 1000,
+                fade: true,
+                asNavFor: '.product-slider-nav'
+            });
+            jQuery('.product-slider-nav').slick({
+                slidesToShow: 3,
+                slidesToScroll: 1,
+                asNavFor: '.product-slider',
+                dots: false,
+                infinite: true,
+                arrows: false,
+                speed: 1000,
+                centerMode: true,
+                focusOnSelect: true
+            });
+            $("input[name='demo3_22']").TouchSpin({
+                initval: 1
+            });
+        });
+    </script>
+    <script>
+        $('.sa-errorss').click(function () {
+            var size_itemId = $(this).data('id');
+
+            swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(function (result) {
+                if (result.value) {
+                    // Người dùng đã xác nhận xoá, thực hiện hành động delete ở đây
+                    $.ajax({
+                        url: '@Url.Action("delete", "_size")/' + size_itemId,
+                        type: 'GET',
+                        success: function (data) {
+                            // Xử lý khi delete thành công
+                            swal('Deleted!', 'Your file has been deleted.', 'success')
+                                .then(function () {
+                                    // Chuyển hướng đến trang index sau khi xoá thành công
+                                    window.location.href = '@Url.Action("Index", "_size")';
+                                });
+                        },
+                        error: function (error) {
+                            // Xử lý khi có lỗi trong quá trình delete
+                            swal('Error!', 'An error occurred during delete.', 'error');
+                        }
+                    });
+                } else {
+                    // Người dùng đã cancel, không thực hiện hành động delete
+                    swal('Cancelled', 'Your file is safe :)', 'error');
+                }
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

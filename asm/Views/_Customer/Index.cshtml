@@ -1,0 +1,107 @@
+@using Microsoft.AspNetCore.Identity
+@using asm.Areas.Identity.Data
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "/Views/Widgets/_admin_layout.cshtml";
+    var customerUsers = ViewData["CustomerUsers"] as List<User>;
+
+}
+<div class="main-container">
+    <div class="xs-pd-20-10 pd-ltr-20">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <!-- <div class="title">
+                        <h4>Product</h4>
+                    </div> -->
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Customer</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="card-box mb-30">
+            <div class="pd-20">
+                <h4 class="text-blue h4">List of Customer</h4>
+            </div>
+            <div class="pb-20">
+                <table class="checkbox-datatable table nowrap">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="dt-checkbox">
+                                    <input type="checkbox" name="select_all" value="1" id="example-select-all">
+                                    <span class="dt-checkbox-label"></span>
+                                </div>
+                            </th>
+                            <th class="table-plus datatable-nosort">Avatar</th>
+                            <th>Name</th>
+                            <th>Gender</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th class="datatable-nosort">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in customerUsers)
+                        {
+                            <tr>
+                                <td></td>
+                                <td class="table-plus">
+                                    <img src="@Url.Content(item.Image)" width="70" height="70" alt="">
+                                </td>
+                                <td>
+                                    <h5 class="font-16">@item.FirstName @item.LastName</h5>
+                                </td>
+                                <td>
+                                    @if (item.Gender == 1)
+                                    {
+                                        <img src="~/admintemplate/vendors/images/male.png" width="70" height="70" alt="">
+                                    }
+                                    else if (item.Gender == 2)
+                                    {
+                                        <img src="~/admintemplate/vendors/images/female.png" width="70" height="70" alt="">
+                                    }
+                                </td>
+                                <td>@item.Email</td>
+                                <td>
+                                    @if (item.Status == 1)
+                                    {
+                                        <span class="badge badge-pill" data-bgcolor="#53A551"
+                                            data-color="#FFFFFF">Active</span>
+                                    }
+                                    else if (item.Status == 2)
+                                    {
+                                        <span class="badge badge-pill" data-bgcolor="#CB444A" data-color="#FFFFFF">Block</span>
+                                    }
+                                </td>
+								<td>
+									<div class="table-actions">
+										<a asp-controller="_customer" asp-action="UpdateStatus" asp-route-userId="@item.Id" data-color="#265ed7"><i
+												class="icon-copy dw dw-switch"></i></a>
+                                        <a asp-action="View" data-color="#265ed7"><i
+												class="icon-copy dw dw-eye"></i></a>
+										@* <a id="sa-warning" asp-action="Delete" asp-route-id="@item.ID"
+									data-color="#e95959"><i
+									class="icon-copy dw dw-delete-3"></i></a> *@
+										@* <a asp-action="Delete" asp-route-id="@item.ID" data-color="#e95959"
+									onclick="return confirmDelete();">
+									<i class="icon-copy dw dw-delete-3"></i>
+									</a> *@
+									</div>
+								</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer-wrap pd-20 mb-20 card-box">
+            Emporio Armani - Administrator By <a href="#" target="_blank">杨志龙</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,113 @@
+@model IEnumerable<asm.Models.Category>
+
+@{
+    ViewData["Title"] = "List of Categories";
+    Layout = "/Views/Widgets/_admin_layout.cshtml";
+}
+<div class="main-container">
+    <div class="xs-pd-20-10 pd-ltr-20">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <!-- <div class="title">
+                        <h4>User</h4>
+                    </div> -->
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Categories</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="text-right col-md-6 col-sm-12">
+                    <a asp-action="Create" class="btn btn-primary btn-sm scroll-click" rel="content-y" role="button">ADD
+                        NEW
+                        CATEGORIES</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-box mb-30">
+            <div class="pd-20">
+                <h4 class="text-blue h4">List of Categories</h4>
+            </div>
+            <div class="pb-20">
+                <table class="checkbox-datatable table nowrap">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="dt-checkbox">
+                                    <input type="checkbox" name="select_all" value="1" id="example-select-all">
+                                    <span class="dt-checkbox-label"></span>
+                                </div>
+                            </th>
+							<th class="table-plus">No</th>
+							<th>Name</th>
+							<th>Date Create</th>
+							<th>Last Update</th>
+							<th>Status</th>
+							<th class="datatable-nosort">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+						@{
+							var i = 1; // Khởi tạo biến đếm
+						}
+						@foreach (var item in Model)
+						{
+                            <tr>
+                                <td></td>
+								<td>@i</td>
+								<td>@Html.DisplayFor(modelItem => item.Name)</td>
+								@*<td>@Html.DisplayFor(modelItem => item.Created_at)</td>*@
+								<td>@item.Created_at.ToString("hh:mm tt MMMM dd, yyyy")</td>
+								<td>@item.Updated_at.ToString("hh:mm tt MMMM dd, yyyy")</td>
+								<td>
+									@if (item.Status == 1)
+									{
+										<span class="badge badge-pill" data-bgcolor="#e7ebf5"
+											data-color="#265ed7">Publish</span>
+									}
+									else if (item.Status == 2)
+									{
+										<span class="badge badge-pill" data-bgcolor="#d6d6d4" data-color="#0d0d0d">Hidden</span>
+									}
+								</td>
+								<td>
+									<div class="table-actions">
+										<a asp-action="Edit" asp-route-id="@item.ID" data-color="#265ed7"><i
+												class="icon-copy dw dw-edit2"></i></a>
+										@* <a id="sa-warning" asp-action="Delete" asp-route-id="@item.ID"
+									data-color="#e95959"><i
+									class="icon-copy dw dw-delete-3"></i></a> *@
+										@* <a asp-action="Delete" asp-route-id="@item.ID" data-color="#e95959"
+									onclick="return confirmDelete();">
+									<i class="icon-copy dw dw-delete-3"></i>
+									</a> *@
+
+										<a class="sa-warning" data-id="@item.ID" data-color="#e95959">
+											<i class="icon-copy dw dw-delete-3" data-controller="_category"></i>
+										</a>
+									</div>
+								</td>
+								@* <td>
+							<div class="pd-20 card-box text-center height-100-p">
+							<h5 class="pt-20 h5 mb-30">A warning message, with a function attached to the
+							"Confirm"-button...</h5>
+							<div class="max-width-200 mx-auto">
+							<button type="button" class="btn mb-20 btn-primary btn-block"
+							id="sa-warning">Click me</button>
+							</div>
+							</div>
+							</td> *@
+							</tr>
+							i++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer-wrap pd-20 mb-20 card-box">
+            Emporio Armani - Administrator By <a href="#" target="_blank">杨志龙</a>
+        </div>
+    </div>
+</div>

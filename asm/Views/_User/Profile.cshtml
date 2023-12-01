@@ -1,0 +1,171 @@
+@using Microsoft.AspNetCore.Identity
+@using asm.Areas.Identity.Data
+@model User
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "/Views/Widgets/_admin_layout.cshtml";
+    var Users = ViewData["UsersNotInCustomerRole"] as List<User>;
+
+}
+<div class="main-container">
+    <div class="pd-ltr-20 xs-pd-20-10">
+        <div class="min-height-200px">
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="title">
+                            <h4>Profile</h4>
+                        </div>
+                        <nav aria-label="breadcrumb" role="navigation">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 mb-30">
+                    <div class="pd-20 card-box height-100-p">
+                        <div class="profile-photo">
+                            <a href="modal" data-toggle="modal" data-target="#modal" class="edit-avatar"><i
+                                    class="fa fa-pencil"></i></a>
+                            <img src="@Url.Content(@ViewBag.image)" alt="" class="avatar-photo">
+                            <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-body pd-5">
+                                            <div class="img-container">
+                                                <img id="image" src="@Url.Content(@ViewBag.image)" alt="Picture">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            @* <input type="submit" value="Update" class="btn btn-primary"> *@
+                                            <button type="button" class="btn btn-default"
+                                                data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h5 class="text-center h5 mb-0">@ViewBag.firstname @ViewBag.LastName</h5>
+                        <p class="text-center text-muted font-14">@ViewBag.userRole</p>
+                        <div class="profile-info">
+                            <h5 class="mb-20 h5 text-blue">Contact Information</h5>
+                            <ul>
+                                <li>
+                                    <span>Email Address:</span>
+                                    @ViewBag.email
+                                </li>
+                                <li>
+                                    <span>Phone Number:</span>
+                                    @ViewBag.phone
+                                </li>
+                                <li>
+                                    <span>Gender:
+                                        <div class="text-center pt-3">
+                                            @if (@ViewBag.gender == 1)
+                                            {
+                                                <img src="~/admintemplate/vendors/images/male.png" width="100" height="100"
+                                                    alt="">
+                                            }
+                                            else if (@ViewBag.gender == 2)
+                                            {
+                                                <img src="~/admintemplate/vendors/images/female.png" width="100"
+                                                    height="100" alt="">
+                                            }
+                                        </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mb-30">
+                    <div class="card-box height-100-p overflow-hidden">
+                        <div class="profile-tab height-100-p">
+                            <div class="tab height-100-p">
+                                <ul class="nav nav-tabs customtab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#setting" role="tab">Person
+                                            Data</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <!-- Setting Tab start -->
+                                    <div class="tab-pane fade show active height-100-p" id="setting" role="tabpanel">
+                                        <div class="profile-setting">
+                                            <form asp-action="Profile" asp-controller="_User" method="POST">
+                                                <input name="userId" type="hidden" value="@ViewBag.Id" />
+                                                <ul class="profile-edit-list row">
+                                                    <li class="weight-500 col-md-12">
+                                                        <div class="row">
+                                                            <div class="form-group col-6">
+                                                                <label>First Name</label>
+                                                                <input asp-for="FirstName"
+                                                                    class="form-control form-control-lg" type="text">
+                                                                <span asp-validation-for="FirstName"
+                                                                    class="text-danger"></span>
+                                                            </div>
+                                                            <div class="form-group col-6">
+                                                                <label>Last Name</label>
+                                                                <input asp-for="LastName"
+                                                                    class="form-control form-control-lg" type="text">
+                                                                <span asp-validation-for="LastName"
+                                                                    class="text-danger"></span>
+                                                            </div>
+                                                            <div class="form-group col-6">
+                                                                <label>Email</label>
+                                                                <input asp-for="Email"
+                                                                    class="form-control form-control-lg" type="email">
+                                                                <span asp-validation-for="Email"
+                                                                    class="text-danger"></span>
+                                                            </div>
+                                                            <div class="form-group col-6">
+                                                                <label>Phone</label>
+                                                                <input asp-for="PhoneNumber"
+                                                                    class="form-control form-control-lg" type="text"
+                                                                    placeholder="">
+                                                                <span asp-validation-for="PhoneNumber"
+                                                                    class="text-danger"></span>
+                                                            </div>
+                                                            <div class="form-group mb-2 col-12">
+                                                                <label>Gender</label>
+                                                                <select asp-for="Gender"
+                                                                    class="selectpicker form-control form-control-lg"
+                                                                    data-style="btn-outline-secondary btn-lg">
+                                                                    <option value="1" selected>Male</option>
+                                                                    <option value="2">Female</option>
+                                                                </select>
+                                                                <span asp-validation-for="Gender"
+                                                                    class="text-danger"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group text-right mt-0">
+                                                            <a asp-area="Identity" asp-page="/Account/Manage/ChangePassword" class="btn btn-secondary">Change The Password</a>
+                                                            <button type="submit" class="btn btn-primary">Save &
+                                                                Update</button>
+                                                        </div>
+                                                    </li>
+                                                    <li class="weight-500 col-md-6">
+                                                    </li>
+                                                </ul>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!-- Setting Tab End -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-wrap pd-20 mb-20 card-box">
+            DeskApp - Bootstrap 4 Admin Template By <a href="https://github.com/dropways" target="_blank">Ankit
+                Hingarajiya</a>
+        </div>
+    </div>
+</div>

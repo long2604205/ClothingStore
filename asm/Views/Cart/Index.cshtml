@@ -1,0 +1,230 @@
+﻿@{
+    var cartItems = ViewData["CartItems"] as List<CartItem>;
+    @model List<CartItem>
+
+    @using System.Globalization
+
+}
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__text">
+                    <h4>Shopping Cart</h4>
+                    <div class="breadcrumb__links">
+                        <a asp-controller="home" asp-action="Index">Home</a>
+                        <a href="./shop.html">Shop</a>
+                        <span>Shopping Cart</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Shopping Cart Section Begin -->
+<section class="shopping-cart spad">
+
+
+    @* <h2>Giỏ hàng</h2>
+
+    @if (cartItems != null && cartItems.Any())
+    {
+    <table>
+    <thead>
+    <tr>
+    <th>Tên sản phẩm</th>
+    <th>Kích thước</th>
+    <th>Số lượng</th>
+    <th>Giá</th>
+    <th>Size</th>
+    <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var cartItem in cartItems)
+    {
+    <tr>
+    <td>@cartItem.ProductId</td>
+    <td>@cartItem.SizeId</td>
+    <td>@cartItem.Quantity</td>
+    <td>@cartItem.Price</td>
+    <td>@cartItem.SizeName</td>
+    <td>@cartItem.ProductName</td>
+    </tr>
+    }
+    </tbody>
+    </table>
+    }
+    else
+    {
+    <p>Giỏ hàng trống</p>
+    } *@
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="shopping__cart__table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Size</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                double total = 0;
+                                int count = 0;
+                            }
+                            @if (cartItems != null && cartItems.Any())
+                            {
+                                @foreach (var cartItem in cartItems)
+                                {
+                                    double amount = @cartItem.Price * @cartItem.Quantity;
+                                    total += amount;
+                                    count++;
+                                    <tr>
+                                        <td class="product__cart__item">
+                                            <div class="product__cart__item__pic">
+                                                <a asp-controller="product" asp-action="details"
+                                                    asp-route-id="@cartItem.ProductId">
+                                                    <img style="max-width: 100px;" src="@Url.Content(@cartItem.Image)"
+                                                        alt="@cartItem.ProductName">
+                                                </a>
+                                            </div>
+                                            <div class="product__cart__item__text">
+                                                <a asp-controller="product" asp-action="details"
+                                                    asp-route-id="@cartItem.ProductId">
+                                                    <h6>@cartItem.ProductName</h6>
+                                                    <h5>@cartItem.Price</h5>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td class="cart__price ml-3">@cartItem.SizeName</td>
+                                        <td class="quantity__item">
+                                            <form id="cart-@cartItem.Id" action="@Url.Action("UpdateCartItem", "Cart")"
+                                                method="post">
+
+                                                <div class="quantity">
+                                                    <div class="pro-qty-2">
+                                                        <input type="hidden" name="newQuantity" value="@cartItem.Quantity" />
+                                                        <input type="text" value="@cartItem.Quantity">
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="cartItemId" value="@cartItem.Id" />
+                                            </form>
+                                        </td>
+                                        <td class="cart__price">@amount.ToString("C", new CultureInfo("en-US"))</td>
+                                        <td class="cart__close">
+                                            <a id="a2" onclick="document.getElementById('cart-@cartItem.Id').submit();"><i
+                                                    class="fa fa-spinner"></i></a>
+                                        </td>
+                                        <td class="cart__close">
+                                            <a asp-action="RemoveCartItem" asp-controller="Cart"
+                                                asp-route-cartItemId="@cartItem.Id"><i class="fa fa-close"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                count = 0;
+                                <tr>
+                                    <td class="cart__price">
+                                        Cart is empty
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="continue__btn">
+                            <a href="#">Continue Shopping</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        @* <div class="continue__btn update__btn">
+                        <a id="a1"><i class="fa fa-spinner"></i> Update
+                        cart</a>
+                        </div> *@
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                @* <div class="cart__discount">
+                    <h6>Discount codes</h6>
+                    <form action="#">
+                        <input type="text" placeholder="Coupon code">
+                        <button type="submit">Apply</button>
+                    </form>
+                </div> *@
+                <div class="cart__total">
+                    <h6>Cart total</h6>
+                    <ul>
+                        <li>Subtotal <span>@total.ToString("C", new CultureInfo("en-US"))</span></li>
+                        <li>Total <span>@total.ToString("C", new CultureInfo("en-US"))</span></li>
+                    </ul>
+                    <a asp-controller="Order" asp-action="Index" class="primary-btn">Proceed to checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Shopping Cart Section End -->
+@section Scripts {
+    <script>
+        // Lắng nghe sự kiện click trên thẻ a1
+        document.getElementById("a1").addEventListener("click", function (event) {
+            // Ngăn chặn hành động mặc định của thẻ a (chẳng hạn điều hướng đến một trang mới)
+            event.preventDefault();
+
+            // Thực hiện hành động cho thẻ a1
+            console.log("a1 is clicked");
+
+            // Thực hiện hành động cho thẻ a2
+            document.getElementById("a2").click();
+        });
+
+        // Lắng nghe sự kiện click trên thẻ a2
+        document.getElementById("a2").addEventListener("click", function (event) {
+            // Ngăn chặn hành động mặc định của thẻ a (chẳng hạn điều hướng đến một trang mới)
+            event.preventDefault();
+
+            // Thực hiện hành động cho thẻ a2
+            console.log("a2 is clicked");
+        });
+    </script>
+    <!-- Sau khi tính toán, cập nhật giá trị count và lưu vào Local Storage -->
+    @* <script>
+var newCount = @count;
+$('#cartItemCount').text(newCount);
+saveCountToLocalStorage(newCount);
+</script> *@
+    <script>
+        var newCount = @count;
+        document.getElementById('cartItemCount').innerText = newCount;
+        localStorage.setItem('cartItemCount', newCount);
+    </script>
+
+    <script>
+        var newToltal = @total;
+        document.getElementById('cartItemTotal').innerText = newToltal;
+        localStorage.setItem('cartItemTotal', newToltal);
+    </script>
+    <script>
+        // Hàm để lấy số lượng sản phẩm từ Local Storage
+        function getCartItemTotal() {
+            return localStorage.getItem('cartItemTotal') || 0;
+        }
+
+        // Gán giá trị vào span với định dạng USD
+        $('#cartItemTotal').text(Number(getCartItemTotal()).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+    </script>
+}

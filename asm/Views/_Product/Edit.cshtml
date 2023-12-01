@@ -1,0 +1,216 @@
+@model asm.Models.Product
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "/Views/Widgets/_admin_layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Product</h4>
+<hr />
+@if (ViewData["ErrorsList"] != null)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var error in (List<string>)ViewData["ErrorsList"])
+            {
+                <li>@error</li>
+            }
+        </ul>
+    </div>
+}
+<div class="main-container">
+    <div class="xs-pd-20-10 pd-ltr-20">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <!-- <div class="title">
+                        <h4>Product</h4>
+                    </div> -->
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a asp-action="Index">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Product</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class=" pd-20 card-box mb-30">
+            <div class="clearfix">
+                <div class="pull-left">
+                    <h4 class="text-blue h4">ADD NEW PRODUCT</h4>
+                </div>
+            </div>
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label>Alias</label>
+                    <input asp-for="Alias" class="form-control" type="text" id="aliasInput" placeholder="Alias generate"
+                        readonly>
+                    <span asp-validation-for="Alias" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input asp-for="Name" class="form-control" type="text" id="nameInput" placeholder="Product's Name"
+                        oninput="updateAlias()">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label for="image">Image</label>
+                            @* <input type="file" id="image" class="form-control-file form-control height-auto"
+                            onchange="displayImage(this)"> *@
+                            <input asp-for="File" type="file" id="images"
+                                class="form-control-file form-control height-auto">
+                            <span asp-validation-for="File" class="text-danger"></span>
+                            <div class="row text-center" id="image-preview">
+                                <div class="col-md-3">
+                                    <div class="image-container">
+                                        <span>Photo</span>
+                                        <img src="@Url.Content(Model.Image)" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-8">
+                        <div class="form-group">
+                            <label>SKU</label>
+                            <input asp-for="Sku" class="form-control" type="text" placeholder="Product's Sku">
+                            <span asp-validation-for="Sku" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Price</label>
+                            @* <input asp-for="Price" type="number" name="demo3_22"> *@
+                            <input asp-for="Price" type="number" class="form-control">
+
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select asp-for="CategoryID" class="selectpicker form-control" data-size="5"
+                                data-style="btn-outline-info" asp-items="ViewBag.CategoryID"></select>
+                        </div>
+                        @* <div class="form-group">
+                            <label>Quantity</label>
+                            <input asp-for="Quantity" type="number" value="10" class="form-control">
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                        </div> *@
+                        <input asp-for="Quantity" type="hidden" value="10" class="form-control">
+                    </div>
+                </div>
+                @* <div class="form-group">
+                <label>Image</label>
+                <input type="file" class="form-control-file form-control height-auto">
+                </div> *@
+                <div class="row">
+                    <div class="form-group col-12">
+                        <label>Status</label>
+                        <select asp-for="Status" class="selectpicker form-control" data-size="5"
+                            data-style="btn-outline-info">
+                            <option selected value="1">Publish</option>
+                            <option value="2">Hidden</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Summary</label>
+                    <textarea asp-for="Summary" class="form-control"></textarea>
+                    <span asp-validation-for="Summary" class="text-danger"></span>
+                </div>
+                @* <div class="form-group">
+                    <label>Content</label>
+                    <textarea asp-for="Content" class="form-control"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div> *@
+                <div class="form-group">
+                    <label>Content</label>
+                    <textarea asp-for="Content" class="textarea_editor form-control border-radius-0"
+                        placeholder="Enter text ..."></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+                <div class="checkout__input mb-4">
+                    <p>Photos of the Product<span>*</span></p>
+                    @* <p><span>Take photo of the front and back of the clothes and where they need to be fixed and upload
+                            them</span></p> *@
+                    <input asp-for="ImageFiles" type="file" id="images-2" multiple>
+                    <div class="row" id="image-preview-2">
+                        @if(Model.Images != null){
+                            @foreach (var image in Model.Images)
+                            {
+                            <div class="col-md-3">
+                                <div class="image-container">
+                                    <span>Photo</span>
+                                    <img src="@Url.Content(image)" alt="">
+                                </div>
+                            </div>
+                            }
+                        } 
+                        else
+                        {
+                        <div class="col-md-3">
+                            <div class="image-container">
+                                <span>Photo</span>
+                                <img src="" alt="">
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+                <div class="form-group text-right">
+                    <a asp-action="Index" class="btn btn-secondary">Back</a>
+                    <input type="submit" value="Save" class="btn btn-primary pl-3" />
+                </div>
+            </form>
+        </div>
+        <div class="footer-wrap pd-20 mb-20 card-box">
+            Emporio Armani - Administrator By <a href="#" target="_blank">杨志龙</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    // Dropzone configuration
+    Dropzone.options.myDropzone = {
+        paramName: "file", // The name that will be used to transfer the file
+        maxFilesize: 2, // MB
+        maxFiles: 1, // Allow only one file
+        acceptedFiles: "image/*", // Accept only image files
+        init: function () {
+            this.on("success", function (file, response) {
+                // Handle successful upload
+                console.log(response);
+            });
+
+            this.on("removedfile", function (file) {
+                // Handle removed file
+                console.log("File removed:", file);
+            });
+        }
+    };
+</script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        // Khi input chọn ảnh thay đổi
+        $("#images-2").change(function () {
+            $("#image-preview-2").html(""); // Xoá ảnh cũ
+            var total_files = $(this).get(0).files.length;
+            for (var i = 0; i < total_files; i++) {
+                var file = $(this).get(0).files[i];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#image-preview-2").append('<div class="col-md-3"><div class="image-container"><img src="' + e.target.result + '" alt="">');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+    });
+</script>
+}

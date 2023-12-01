@@ -1,0 +1,257 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    var product = ViewData["Product"] as Product;
+    var productSizes = ViewData["ProductSizes"] as List<Size>;
+    var relatedProducts = ViewData["RelatedProducts"] as List<Product>;
+}
+<!-- Shop Details Section Begin -->
+<section class="shop-details">
+    <div class="product__details__pic">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="product__details__breadcrumb">
+                        <a href="./index.html">Home</a>
+                        <a href="./shop.html">Shop</a>
+                        <span>Product Details</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-3">
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="product-slider slider-arrow">
+                        <div class="product-slide">
+                            <img src="@Url.Content(product.Image)" alt="@product.Name">
+                        </div>
+                        @foreach (var image in product.Images)
+                        {
+                            <div class="product-slide">
+                                <img src="@Url.Content(image)" alt="@product.Name" />
+                            </div>
+                        }
+                    </div>
+                    <div class="product-slider-nav">
+                        <div class="product-slide-nav">
+                            <img src="@Url.Content(product.Image)" alt="@product.Name">
+                        </div>
+                        @foreach (var image in product.Images)
+                        {
+                            <div class="product-slide-nav">
+                                <img src="@Url.Content(image)" alt="@product.Name" />
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-3">
+                </div>
+                @* <div class="col-lg-3 col-md-3">
+                <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">
+                <div class="product__thumb__pic set-bg" data-setbg="@Url.Content(@product.Image)">
+                </div>
+                </a>
+                </li>
+                @{
+                var i = 2;
+                }
+                @foreach (var image in product.Images)
+                {
+                <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-@i" role="tab">
+                <div class="product__thumb__pic set-bg" data-setbg="@Url.Content(image)">
+                </div>
+                </a>
+                </li>
+                i++;
+                }
+                </ul>
+                </div>
+                <div class="col-lg-6 col-md-9">
+                <div class="tab-content">
+                <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                <div class="product__details__pic__item">
+                <img src="@Url.Content(@product.Image)" alt="@product.Name">
+                </div>
+                </div>
+                @{
+                var j = 2;
+                }
+                @foreach (var image in product.Images)
+                {
+                <div class="tab-pane" id="tabs-@j" role="tabpanel">
+                <div class="product__details__pic__item">
+                <img src="@Url.Content(image)" alt="@product.Name">
+                </div>
+                </div>
+                j++;
+                }
+                </div>
+                </div> *@
+            </div>
+        </div>
+    </div>
+    @{
+        double priceDouble1 = product.Price ?? 0; // Giả định related.Price là kiểu double
+        decimal price1 = (decimal)priceDouble1; // Ép kiểu double thành decimal
+        string formattedPrice1 = price1.ToString("C",
+        System.Globalization.CultureInfo.CreateSpecificCulture("en-US"));
+    }
+    <div class="product__details__content">
+        <div class="container">
+            <div class="row d-flex justify-content-center">
+                <div class="col-lg-8">
+
+                    <form action="@Url.Action("AddToCart", "Cart")" method="post">
+
+                        @* <input type="hidden" name="UserId" value="e2cc3e91-cd44-46d6-92d4-ea5ebd8ba439" /> *@
+
+                        <input type="hidden" name="ProductId" value="@product.ID" />
+
+                        <input type="hidden" name="ProductName" value="@product.Name" />
+                        <input type="hidden" name="Image" value="@product.Image" />
+
+
+                        @* <input type="text" name="SizeId" /> *@
+
+                        @* <input type="number" name="Quantity" required /> *@
+
+
+                        <input type="hidden" name="Price" value="@priceDouble1" required />
+
+
+                        <div class="product__details__text">
+                            <h4>@product.Name</h4>
+                            <h3>@formattedPrice1</h3>
+                            <p>@product.Summary</p>
+                            <div class="product__details__option">
+                                <div class="product__details__option__size">
+                                    <span>Size:</span>
+                                    @foreach (var size in productSizes)
+                                    {
+                                        @* <label for="size-@size.ID"> *@
+                                        @* <input type="radio" id="size-@size.ID" name="SizeId" value="@size.ID">
+                                    <input type="hidden" name="SizeName" value="@size.Name" /> *@
+                                        @* <input type="radio" id="size-@size.ID" name="SizeId" value="@size.ID"
+                                    onchange="updateSizeName('@size.Name')"> *@
+                                        @* <input type="radio" id="size-@size.ID" name="SizeId" value="@size.ID"
+                                    onchange="updateSizeName('@size.Name')">
+                                    @size.Name
+                                    </label> *@
+                                        <label for="size-@size.ID"
+                                            class="@((size == productSizes.First()) ? "active" : "")">
+                                            <input type="radio" id="size-@size.ID" name="SizeId" value="@size.ID"
+                                                onchange="updateSizeName('@size.Name', this)">
+                                            @size.Name
+                                        </label>
+                                    }
+                                    <input type="hidden" name="SizeName" id="hiddenSizeName" value="" />
+                                </div>
+                            </div>
+                            <div class="product__details__cart__option">
+                                <div class="quantity">
+                                    <div class="pro-qty">
+                                        <input type="text" value="1" name="Quantity">
+                                    </div>
+                                </div>
+                                @* <a href="#" class="primary-btn">add to cart</a> *@
+                                <button type="submit" class="primary-btn">add to cart</button>
+                            </div>
+                    </form>
+                    <div class="product__details__last__option">
+                        <h5><span>Guaranteed Safe Checkout</span></h5>
+                        <img src="img/shop-details/details-payment.png" alt="">
+                        <ul>
+                            <li><span>SKU:</span> @product.Sku</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="product__details__tab">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#tabs-5" role="tab">Description</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tabs-5" role="tabpanel">
+                            <div class="product__details__tab__content">
+                                @Html.Raw(product.Content)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+<!-- Shop Details Section End -->
+
+<!-- Related Section Begin -->
+<section class="related spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3 class="related-title">YOU MAY ALSO LIKE</h3>
+            </div>
+        </div>
+        <div class="row">
+            @foreach (var related in relatedProducts)
+            {
+                double priceDouble = related.Price ?? 0; // Giả định related.Price là kiểu double
+                decimal price = (decimal)priceDouble; // Ép kiểu double thành decimal
+                string formattedPrice = price.ToString("C",
+                System.Globalization.CultureInfo.CreateSpecificCulture("en-US"));
+
+                <div class="col-lg-3 col-md-6 col-sm-6 col-sm-6">
+                    <div class="product__item">
+                        <div class="product__item__pic set-bg" style="height: 400px; width:auto;"
+                            data-setbg="@Url.Content(related.Image)">
+                            <span class="label">New</span>
+                            <ul class="product__hover">
+                                @* <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li> *@
+                                <li><a asp-controller="product" asp-action="details" asp-route-id="@related.ID"><img
+                                            src="~/maintemplate/img/icon/search.png" alt=""><span>Detail</span></a></li>
+                            </ul>
+                        </div>
+                        <div class="product__item__text">
+                            <h6>@related.Name</h6>
+                            <a asp-controller="product" asp-action="details" asp-route-id="@related.ID"
+                                class="add-cart">View Details</a>
+                            <h5>@formattedPrice</h5>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+<!-- Related Section End -->
+@section Scripts {
+    <script>
+            // Hàm cập nhật giá trị SizeName và thêm/xóa lớp active
+            function updateSizeName(sizeName, radio) {
+                $("#hiddenSizeName").val(sizeName);
+
+                // Xóa lớp active từ tất cả các label
+                $("label").removeClass("active");
+
+                // Thêm lớp active cho label chứa radio button được chọn
+                $(radio).closest("label").addClass("active");
+
+                console.log(sizeName);
+            }
+
+        // Chọn mặt định radio button đầu tiên sau khi trang tải xong
+        $(window).on('load', function () {
+            $("input[name='SizeId']:first").prop("checked", true);
+            updateSizeName('@productSizes.First().Name', $("input[name='SizeId']:first"));
+        });
+    </script>
+}

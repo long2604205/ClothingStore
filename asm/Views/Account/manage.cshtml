@@ -1,0 +1,134 @@
+@model List<Order>
+@using System.Globalization;
+
+@{
+    var orders = ViewData["Orders"] as List<Order>;
+}
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__text">
+                    <h4>Order Management</h4>
+                    <div class="breadcrumb__links">
+                        <a asp-controller="home" asp-action="Index">Home</a>
+                        <span>Order Management</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+<!-- Checkout Section Begin -->
+<section class="checkout spad">
+    <div class="container">
+        <div class="checkout__form">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <h6 class="checkout__title">Order Management</h6>
+                    <div class="row">
+                        <div class="col-12">
+                            <table id="myDataTable" class="table table-hover table-inverse data-table">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Code</th>
+                                        <th>Total</th>
+                                        <th>Payment</th>
+                                        <th>Date</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(orders != null){
+                                        var i = 0;
+                                    @foreach (var order in orders)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td scope="row">@i</td>
+                                            <td>@order.Code</td>
+                                            <td>@string.Format(new CultureInfo("en-US"), "{0:C}", order.TotalAmount)</td>
+                                            <td>@order.Payment</td>
+                                            <td>@string.Format("{0:hh:mm tt MMMM dd, yyyy}", order.Created_at)</td>
+                                            @if (@order.Status == 1)
+                                            {
+                                                <td class="text-center">
+                                                    <span class="badge badge-pill badge-info">Processing</span>
+                                                </td>
+                                            }
+                                            else if (@order.Status == 2)
+                                            {
+                                                <td>
+                                                    <p>Confirmed</p>
+                                                </td>
+                                            }
+                                            else if (@order.Status == 3)
+                                            {
+                                                <td>
+                                                    <p>Delivering</p>
+                                                </td>
+                                            }
+                                            else if (@order.Status == 4)
+                                            {
+                                                <td>
+                                                    <p>Delivered Successfully</p>
+                                                </td>
+                                            }
+                                            else if (@order.Status == 5)
+                                            {
+                                                <td class="text-center">
+                                                    <span class="badge badge-pill badge-danger">Canceled</span>
+                                                </td>
+                                            }
+                                            <td class="text-center">
+                                                @if (order.Status == 5 || order.Status == 4)
+                                                {
+                                                    <a name="" id="" class="btn btn-secondary" role="button"
+                                                        style="width: 150px;" asp-action="details" asp-controller="Account"
+                                                        asp-route-id="@order.ID">View</a>
+                                                }
+                                                else
+                                                {
+                                                    <a name="" id="" class="btn btn-secondary" role="button"
+                                                        style="width: 75px;" asp-action="details" asp-controller="Account"
+                                                        asp-route-id="@order.ID">View</a>
+                                                    <a name="" id="" class="btn btn-danger" asp-action="cancel"
+                                                        asp-controller="Account" asp-route-id="@order.ID" role="button"
+                                                        style="width: 75px;">Cancel</a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                    }else{
+                                        <tr>
+                                            <td scope="row">You don't have any orders yet</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Checkout Section End -->
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#myDataTable').DataTable({
+                searching: true,
+                paging: true,
+            });
+        });
+    </script>
+
+}

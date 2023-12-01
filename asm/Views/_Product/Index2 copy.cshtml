@@ -1,0 +1,108 @@
+@model IEnumerable<asm.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "/Views/Widgets/_admin_layout.cshtml";
+}
+<div class="main-container">
+    <div class="xs-pd-20-10 pd-ltr-20">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <!-- <div class="title">
+                        <h4>Product</h4>
+                    </div> -->
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Product</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="card-box mb-30">
+            <!-- <h2 class="h4 pd-20"></h2> -->
+            @* <form asp-controller="_product" asp-action="Index" method="get">
+                <p>
+                    Title: <input type="text" name="SearchString" />
+                    <input type="submit" value="Filter" />
+                </p>
+            </form> *@
+            <div class="clearfix">
+                <div class="pull-left">
+                    <h2 class="h4 pd-20">List of Product</h2>
+                </div>
+                <div class="pull-right">
+                    <a asp-action="Create" class="btn btn-primary btn-sm scroll-click" rel="content-y" role="button">ADD
+                        NEW
+                        PRODUCT</a>
+                </div>
+            </div>
+            <table class="data-table table nowrap">
+                <thead>
+                    <tr>
+                        <th class="table-plus datatable-nosort">Product</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>SKU</th>
+                        @* <th>Category</th> *@
+                        <th>Status</th>
+                        <th class="datatable-nosort">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="table-plus">
+                                <img src="@Url.Content(item.Image)" width="70" height="70" alt="">
+                            </td>
+                            <td>
+                                <h5 class="font-16">@item.Name</h5>
+                            </td>
+                            <td>$@item.Price</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Sku</td>
+                            @* <td>@item.Category.Name</td> *@
+                            <td>
+                                @if (item.Status == 1)
+                                {
+                                    <span class="badge badge-pill" data-bgcolor="#e7ebf5" data-color="#265ed7">Publish</span>
+                                }
+                                else if (item.Status == 2)
+                                {
+                                    <span class="badge badge-pill" data-bgcolor="#d6d6d4" data-color="#0d0d0d">Hidden</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#"
+                                        role="button" data-toggle="dropdown">
+                                        <i class="dw dw-more"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
+                                        <a class="dropdown-item" asp-action="Details" asp-route-id="@item.ID"><i
+                                                class="dw dw-eye"></i> View</a>
+                                        <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.ID"><i
+                                                class="dw dw-edit2"></i> Edit</a>
+                                        <a class="dropdown-item sa-errors-2" data-id="@item.ID"><i
+                                                class="dw dw-delete-3" data-controller="_category"></i> Delete</a>
+                                                
+                                        @* <a class="sa-warning-2" data-id="@item.ID" data-color="#e95959">
+                                            <i class="icon-copy dw dw-delete-3" data-controller="_category"></i>
+                                        </a> *@
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="footer-wrap pd-20 mb-20 card-box">
+            Emporio Armani - Administrator By <a href="#" target="_blank">杨志龙</a>
+        </div>
+    </div>
+</div>

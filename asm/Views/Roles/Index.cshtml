@@ -1,0 +1,71 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<IdentityRole>
+@{
+    ViewData["Title"] = "Roles";
+    Layout = "/Views/Widgets/_admin_layout.cshtml";
+}
+
+<div class="main-container">
+    <div class="xs-pd-20-10 pd-ltr-20">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <!-- <div class="title">
+                        <h4>User</h4>
+                    </div> -->
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Roles</li>
+                        </ol>
+                    </nav>
+                </div>
+                @* <div class="text-right col-md-6 col-sm-12">
+                    <a asp-action="Create" class="btn btn-primary btn-sm scroll-click" rel="content-y" role="button">ADD
+                        NEW
+                        SIZE</a>
+                </div> *@
+            </div>
+        </div>
+        <div class="card-box mb-30">
+            <div class="pd-20">
+                <h4 class="text-blue h4">List of Role</h4>
+            </div>
+            <div class="pb-20">
+                <table class="checkbox-datatable table nowrap">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="dt-checkbox">
+                                    <input type="checkbox" name="select_all" value="1" id="example-select-all">
+                                    <span class="dt-checkbox-label"></span>
+                                </div>
+                            </th>
+							<th class="table-plus">No</th>
+							<th>Name</th>
+							<th class="datatable-nosort">NormalizedName</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+						@{
+							var i = 1; // Khởi tạo biến đếm
+						}
+						@foreach (var item in Model)
+						{
+                            <tr>
+                                <td></td>
+								<td>@i</td>
+								<td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.NormalizedName)</td>
+							</tr>
+							i++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer-wrap pd-20 mb-20 card-box">
+            Emporio Armani - Administrator By <a href="#" target="_blank">杨志龙</a>
+        </div>
+    </div>
+</div>

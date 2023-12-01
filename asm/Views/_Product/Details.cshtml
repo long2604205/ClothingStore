@@ -1,0 +1,193 @@
+@model asm.Models.Product
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "/Views/Widgets/_admin_layout.cshtml";
+}
+
+<div class="main-container">
+    <div class="pd-ltr-20 xs-pd-20-10">
+        <div class="min-height-200px">
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <nav aria-label="breadcrumb" role="navigation">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Product Detail</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="product-wrap">
+                <div class="product-detail-wrap mb-30">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="product-slider slider-arrow">
+                                <div class="product-slide">
+                                    <img src="@Url.Content(Model.Image)" alt="@Model.Name">
+                                </div>
+                                @foreach (var image in Model.Images)
+                                {
+                                    <div class="product-slide">
+                                        <img src="@Url.Content(image)" alt="@Model.Name" />
+                                    </div>
+                                }
+                            </div>
+                            <div class="product-slider-nav">
+                                <div class="product-slide-nav">
+                                    <img src="@Url.Content(Model.Image)" alt="@Model.Name">
+                                </div>
+                                @foreach (var image in Model.Images)
+                                {
+                                    <div class="product-slide-nav">
+                                        <img src="@Url.Content(image)" alt="@Model.Name" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="product-detail-desc pd-20 card-box height-100-p">
+                                <h4 class="mb-20 pt-20">@Model.Name</h4>
+                                <b>Summary: </b>
+                                <p>@Model.Summary</p>
+                                <b>Content: </b>
+                                <br>
+                                @Html.Raw(Model.Content)
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">SKU</th>
+                                            <th scope="col">Alias</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>$@Model.Price</td>
+                                            <td>@Model.Sku</td>
+                                            <td>@Model.Alias</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Date Create</th>
+                                            <th scope="col">Last updated</th>
+                                            <th scope="col">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                @if (Model.Updated_at.HasValue)
+                                                {
+                                                    @Model.Updated_at.Value.ToString("hh:mm tt MMMM dd, yyyy")
+                                                }
+                                                else
+                                                {
+                                                    <text>No Date</text>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (Model.Created_at.HasValue)
+                                                {
+                                                    @Model.Created_at.Value.ToString("hh:mm tt MMMM dd, yyyy")
+                                                }
+                                                else
+                                                {
+                                                    <text>No Date</text>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (Model.Status == 1)
+                                                {
+                                                    <span class="badge badge-primary">Publish</span>
+                                                }
+                                                else if (Model.Status == 2)
+                                                {
+                                                    <span class="badge badge-secondary">Hidden</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                @* @if (Model.Sizes != null && Model.Sizes.Any())
+                                {
+                                <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                <th scope="col">Size</th>
+                                @foreach (var productSize in Model.Sizes)
+                                {
+                                <th scope="col">@productSize.Size?.Name</th>
+                                }
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                <th scope="row">Quantity</th>
+                                @foreach (var productSize in Model.Sizes)
+                                {
+                                <th scope="col">@productSize.StockQuantity</th>
+                                }
+                                </tr>
+                                </tbody>
+                                </table>
+                                } *@
+                                @if (Model.Sizes != null && Model.Sizes.Any())
+                                {
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Size</th>
+                                                <th scope="col">Stock Quantity</th>
+                                                <th scope="col">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                var i = 1; // Khởi tạo biến đếm
+                                            }
+                                            @foreach (var productSize in Model.Sizes)
+                                            {
+                                                <tr>
+                                                    <th scope="col">@i</th>
+                                                    <th scope="col">@productSize.Size?.Name</th>
+                                                    <td>@productSize.StockQuantity</td>
+                                                    <td> <a asp-controller="_productsize" asp-action="Edit"
+                                                            asp-route-id="@productSize.ID" asp-route-productID="@Model.ID"
+                                                            data-color="#e95959"><i class="icon-copy dw dw-edit2"></i></a>
+                                                    </td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                                <div class="row">
+                                    <div class="col-md-6 col-6">
+                                        <a asp-controller="_ProductSize" asp-action="Create"
+                                            asp-route-productID="@Model.ID" class="btn btn-primary btn-block">Add Stock
+                                            Quantity</a>
+                                    </div>
+                                    <div class="col-md-6 col-6">
+                                        <a asp-action="Edit" asp-route-id="@Model.ID"
+                                            class="btn btn-outline-primary btn-block">Edit</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-wrap pd-20 mb-20 card-box">
+            DeskApp - Bootstrap 4 Admin Template By <a href="https://github.com/dropways" target="_blank">Ankit
+                Hingarajiya</a>
+        </div>
+    </div>
+</div>

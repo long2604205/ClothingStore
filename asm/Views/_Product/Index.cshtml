@@ -1,0 +1,145 @@
+@model IEnumerable<asm.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "/Views/Widgets/_admin_layout.cshtml";
+}
+<div class="main-container">
+    <div class="xs-pd-20-10 pd-ltr-20">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <!-- <div class="title">
+                        <h4>Product</h4>
+                    </div> -->
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Product</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="text-right col-md-6 col-sm-12">
+                    <a asp-action="Create" class="btn btn-primary btn-sm scroll-click" rel="content-y" role="button">ADD
+                        NEW
+                        PRODUCT</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-box mb-30">
+            <div class="pd-20">
+                <h4 class="text-blue h4">List of Product</h4>
+            </div>
+            <div class="pb-20">
+                <table class="checkbox-datatable table nowrap">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="dt-checkbox">
+                                    <input type="checkbox" name="select_all" value="1" id="example-select-all">
+                                    <span class="dt-checkbox-label"></span>
+                                </div>
+                            </th>
+                            <th class="table-plus datatable-nosort">Product</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>SKU</th>
+                            <th>Status</th>
+                            <th class="datatable-nosort">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td></td>
+                                <td class="table-plus">
+                                    <img src="@Url.Content(item.Image)" width="70" height="70" alt="">
+                                </td>
+                                <td>
+                                    <h5 class="font-16">@item.Name</h5>
+                                </td>
+                                <td>$@item.Price</td>
+                                <td>@item.Sku</td>
+                                <td>
+                                    @if (item.Status == 1)
+                                    {
+                                        <span class="badge badge-pill" data-bgcolor="#e7ebf5"
+                                            data-color="#265ed7">Publish</span>
+                                    }
+                                    else if (item.Status == 2)
+                                    {
+                                        <span class="badge badge-pill" data-bgcolor="#d6d6d4" data-color="#0d0d0d">Hidden</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#"
+                                            role="button" data-toggle="dropdown">
+                                            <i class="dw dw-more"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
+                                            <a class="dropdown-item" asp-action="Details" asp-route-id="@item.ID"><i
+                                                    class="dw dw-eye"></i> View</a>
+                                            <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.ID"><i
+                                                    class="dw dw-edit2"></i> Edit</a>
+                                            <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.ID"><i
+                                                    class="dw dw-delete-3" data-controller="_product"></i> Delete</a>
+
+                                            @* <a class="sa-warning-2" data-id="@item.ID" data-color="#e95959">
+                                        <i class="icon-copy dw dw-delete-3" data-controller="_category"></i>
+                                        </a> *@
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="footer-wrap pd-20 mb-20 card-box">
+            Emporio Armani - Administrator By <a href="#" target="_blank">杨志龙</a>
+        </div>
+    </div>
+</div>
+@section Scripts {
+        <script>
+        $('.sa-errors-product').click(function () {
+            var size_itemId = $(this).data('id');
+
+            swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                confirmButtonText: 'Yes, delete it!'
+            }).then(function (result) {
+                if (result.value) {
+                    // Người dùng đã xác nhận xoá, thực hiện hành động delete ở đây
+                    $.ajax({
+                        url: '@Url.Action("delete", "_size")/' + size_itemId,
+                        type: 'GET',
+                        success: function (data) {
+                            // Xử lý khi delete thành công
+                            swal('Deleted!', 'Your file has been deleted.', 'success')
+                                .then(function () {
+                                    // Chuyển hướng đến trang index sau khi xoá thành công
+                                    window.location.href = '@Url.Action("Index", "_size")';
+                                });
+                        },
+                        error: function (error) {
+                            // Xử lý khi có lỗi trong quá trình delete
+                            swal('Error!', 'An error occurred during delete.', 'error');
+                        }
+                    });
+                } else {
+                    // Người dùng đã cancel, không thực hiện hành động delete
+                    swal('Cancelled', 'Your file is safe :)', 'error');
+                }
+            });
+        });
+    </script>
+}

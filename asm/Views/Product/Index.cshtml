@@ -1,0 +1,197 @@
+﻿@{
+    ViewData["Title"] = "Woman";
+    var AllProducts = ViewData["ListProduct"] as List<Product>;
+    var Categories = ViewData["ListCategory"] as List<Category>;
+    var ProductCount = ViewData["ProductCount"] ?? 0;
+
+
+
+}
+<!-- Shop Section Begin -->
+<section class="shop spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="shop__sidebar">
+                    <div class="shop__sidebar__search">
+                        @* <form action="#">
+                        <input type="text" placeholder="Search...">
+                        <button type="submit"><span class="icon_search"></span></button>
+                        </form> *@
+                        <form asp-action="Index" asp-controller="Product" method="post">
+                            <input type="text" name="search" placeholder="Search...">
+                            <button type="submit"><span class="icon_search"></span></button>
+                        </form>
+                    </div>
+                    <div class="shop__sidebar__accordion">
+                        <div class="accordion" id="accordionExample">
+                            <div class="card">
+                                <div class="card-heading">
+                                    <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
+                                </div>
+                                <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="shop__sidebar__categories">
+                                            <ul class="nice-scroll">
+                                                @* <li><a asp-action="Index" asp-controller="Product">All
+                                                Product</a></li> *@
+                                                @if (Categories != null)
+                                                {
+                                                    @foreach (var cate in Categories)
+                                                    {
+                                                        <li><a asp-action="Index" asp-controller="Product"
+                                                                asp-route-id="@cate.ID">@cate.Name</a></li>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <li><a href="#">No categories found.</a></li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="shop__product__option">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="shop__product__option__left">
+                                <p>Showing 1–12 of @ProductCount results</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="shop__product__option__right">
+                                <p>ORDER BY:</p>
+                                @* <select>
+                                <option value="">New In</option>
+                                <option value="">Price Low to High</option>
+                                <option value="">Price High to Low</option>
+                                </select> *@
+                                <select onchange="location = this.value;">
+                                    @* <option value="?sortOrder=NewIn">New In</option>
+                                    <option value="?sortOrder=PriceLowToHigh">Price Low to High</option>
+                                    <option value="?sortOrder=PriceHighToLow">Price High to Low</option> *@
+                                    <option value="?sortOrder=NewIn"
+                                        selected="@(ViewData["SortOrder"] as string == "NewIn")">New In</option>
+                                    <option value="?sortOrder=PriceLowToHigh"
+                                        selected="@(ViewData["SortOrder"] as string == "PriceLowToHigh")">Price Low to
+                                        High</option>
+                                    <option value="?sortOrder=PriceHighToLow"
+                                        selected="@(ViewData["SortOrder"] as string == "PriceHighToLow")">Price High to
+                                        Low</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    @foreach (var item in AllProducts)
+                    {
+                        double priceDouble = item.Price ?? 0; // Giả định related.Price là kiểu double
+                        decimal price = (decimal)priceDouble; // Ép kiểu double thành decimal
+                        string formattedPrice = price.ToString("C",
+                        System.Globalization.CultureInfo.CreateSpecificCulture("en-US"));
+
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="product__item">
+                                <div class="product__item__pic set-bg" style="height: 400px; width:auto;"
+                                    data-setbg="@Url.Content(item.Image)">
+                                    <ul class="product__hover">
+                                        <li><a asp-controller="product" asp-action="details" asp-route-id="@item.ID"><img
+                                                    src="~/maintemplate/img/icon/search.png" alt=""><span>Detail</span></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="product__item__text">
+                                    <h6>@item.Name</h6>
+                                    <a asp-controller="product" asp-action="details" asp-route-id="@item.ID"
+                                        class="add-cart">View Details</a>
+                                    <h5>@formattedPrice</h5>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="row">
+                    @* <div class="col-lg-12">
+                    <div class="product__pagination">
+                    @if ((int)ViewData["TotalPages"] > 0)
+                    {
+                    int currentPage = (int)ViewData["CurrentPage"];
+                    int totalPages = (int)ViewData["TotalPages"];
+                    int visiblePageCount = 3;
+
+                    // Hiển thị trang đầu tiên
+                    <a href="?page=1" @(currentPage == 1 ? "class=active" : "")>1</a>
+
+                    // Hiển thị trang giữa (có thể đẩy lùi lên)
+                    for (int i = currentPage - 2; i <= currentPage + 2; i++)
+                    {
+                    if (i > 1 && i < totalPages)
+                    {
+                    <a href="?page=@i" @(i == currentPage ? "class=active" : "")>@i</a>
+                    }
+                    }
+
+                    // Hiển thị dấu "..."
+                    if (currentPage + 2 < totalPages)
+                    {
+                    <span>...</span>
+                    }
+
+                    // Hiển thị trang cuối cùng
+                    <a href="?page=@totalPages" @(currentPage == totalPages ? "class=active" :
+                    "")>@totalPages</a>
+                    }
+                    </div> *@
+                    <div class="col-lg-12">
+                        <div class="product__pagination">
+                            @if ((int)ViewData["TotalPages"] > 1)
+                            {
+                                int currentPage = (int)ViewData["CurrentPage"];
+                                int totalPages = (int)ViewData["TotalPages"];
+                                int visiblePageCount = 3;
+
+                                // Hiển thị trang đầu tiên
+                                <a href="?page=1" @(currentPage == 1 ? "class=active" : "")>1</a>
+
+                                // Hiển thị trang giữa (có thể đẩy lùi lên)
+                                for (int i = currentPage - 2; i <= currentPage + 2; i++)
+                                {
+                                    if (i > 1 && i < totalPages)
+                                    {
+                                        <a href="?page=@i" @(i == currentPage ? "class=active" : "")>@i</a>
+                                    }
+                                }
+
+                                // Hiển thị dấu "..."
+                                if (currentPage + 2 < totalPages)
+                                {
+                                    <span>...</span>
+                                }
+
+                                // Hiển thị trang cuối cùng
+                                <a href="?page=@totalPages" @(currentPage == totalPages ? "class=active" :
+                                "")>@totalPages</a>
+                            }
+                            else if ((int)ViewData["TotalPages"] == 1)
+                            {
+                            // Hiển thị trang đầu tiên nếu chỉ có một trang
+                                <a href="?page=1" class="active">1</a>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+<!-- Shop Section End -->

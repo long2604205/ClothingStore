@@ -1,0 +1,57 @@
+@model asm.Models.Category
+
+@{
+	ViewData["Title"] = "Create";
+	Layout = "/Views/Widgets/_admin_layout.cshtml";
+}
+<div class="main-container">
+	<div class="xs-pd-20-10 pd-ltr-20">
+		<div class=" pd-20 card-box mb-30">
+			<div class="clearfix">
+				<div class="pull-left">
+					<h4 class="text-blue h4">ADD NEW CATEGORIES</h4>
+				</div>
+			</div>
+			<form asp-action="Create">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				<div class="form-group">
+					<label>Name</label>
+					<input asp-for="Name" class="form-control" type="text" placeholder="Name of Category">
+					<span asp-validation-for="Name" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<label>Status</label>
+					<select asp-for="Status" class="selectpicker form-control" data-size="5"
+						data-style="btn-outline-info">
+						<option selected value="1">Publish</option>
+						<option value="2">Hidden</option>
+					</select>
+				</div>
+				@* <div class="form-group">
+				<label asp-for="Created_at" class="control-label"></label>
+				<input asp-for="Created_at" class="form-control" />
+				<span asp-validation-for="Created_at" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+				<label asp-for="Updated_at" class="control-label"></label>
+				<input asp-for="Updated_at" class="form-control" />
+				<span asp-validation-for="Updated_at" class="text-danger"></span>
+				</div> *@
+				<div class="form-group text-right">
+					<a asp-action="Index" class="btn btn-secondary">Back</a>
+					<input type="submit" value="Save" class="btn btn-primary pl-3" />
+				</div>
+			</form>
+		</div>
+		<div class="footer-wrap pd-20 mb-20 card-box">
+			Emporio Armani - Administrator By <a href="#" target="_blank">杨志龙</a>
+		</div>
+	</div>
+</div>
+
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

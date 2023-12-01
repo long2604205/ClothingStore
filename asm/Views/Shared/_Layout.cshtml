@@ -1,0 +1,336 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using asm.Areas.Identity.Data
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Emporio Armani | Clothing</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="~/maintemplate/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="~/maintemplate/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="~/maintemplate/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="~/maintemplate/css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="~/maintemplate/css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="~/maintemplate/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="~/maintemplate/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="~/maintemplate/css/style.css" type="text/css">
+    <!-- Slick Slider css -->
+    <link rel="stylesheet" type="text/css" href="~/admintemplate/src/plugins/slick/slick.css">
+    <link rel="stylesheet" type="text/css" href="~/admintemplate/vendors/styles/icon-font.min.css">
+    <!-- bootstrap-touchspin css -->
+    <link rel="stylesheet" type="text/css"
+        href="~/maintemplate/src/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    @* <link rel="stylesheet" type="text/css" href="~/admintemplate/vendors/styles/style.css"> *@
+
+    <link rel="stylesheet" type="text/css"
+        href="~/admintemplate/src/plugins/datatables/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css"
+        href="~/admintemplate/src/plugins/datatables/css/responsive.bootstrap4.min.css">
+
+
+
+    <style>
+        .product-slider {
+            margin-bottom: 20px
+        }
+
+        .slider-arrow .slick-arrow,
+        .slider-arrow .slick-arrow:before {
+            -webkit-transition: all .3s ease-in-out;
+            transition: all .3s ease-in-out
+        }
+
+        .slider-arrow .slick-arrow {
+            position: absolute;
+            bottom: 0;
+            width: 40px;
+            height: 40px;
+            top: 50%;
+            margin-top: -20px;
+            border: 1px solid #d2d1d4;
+            background: #d2d1d4;
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 0;
+            text-align: center
+        }
+
+        .slider-arrow .slick-arrow:hover {
+            border-color: #2a2d31
+        }
+
+        .slider-arrow .slick-arrow:hover:before {
+            color: #fff
+        }
+
+        .slider-arrow .slick-arrow:before {
+            font-family: "dropways";
+            font-size: 16px;
+            color: #fff;
+            line-height: 38px
+        }
+
+        .slider-arrow .slick-arrow.slick-prev {
+            z-index: 12;
+            left: 15px
+        }
+
+        .slider-arrow .slick-arrow.slick-prev:before {
+            content: "\eabc"
+        }
+
+        .slider-arrow .slick-arrow.slick-next {
+            right: 15px
+        }
+
+        .slider-arrow .slick-arrow.slick-next:before {
+            content: "\eabd"
+        }
+
+        .product-slide-nav {
+            padding: 10px
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Offcanvas Menu Begin -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="offcanvas__option">
+            <div class="offcanvas__links">
+                <a asp-controller="_product" asp-action="Index">Sign in</a>
+                <a href="#">FAQs</a>
+            </div>
+            <div class="offcanvas__top__hover">
+                <span>Usd <i class="arrow_carrot-down"></i></span>
+                <ul>
+                    <li>USD</li>
+                    <li>EUR</li>
+                    <li>USD</li>
+                </ul>
+            </div>
+        </div>
+        <div class="offcanvas__nav__option">
+            <a href="#" class="search-switch"><img src="~/maintemplate/img/icon/search.png" alt=""></a>
+            <a href="#"><img src="~/maintemplate/img/icon/heart.png" alt=""></a>
+            <a asp-controller="cart" asp-action="Index"><img src="~/maintemplate/img/icon/cart.png" alt="">
+                <span>0</span></a>
+            <div class="price">$0.00</div>
+        </div>
+        <div id="mobile-menu-wrap"></div>
+        <div class="offcanvas__text">
+            <p>Free shipping, 30-day return or refund guarantee.</p>
+        </div>
+    </div>
+    <!-- Offcanvas Menu End -->
+
+    <!-- Header Section Begin -->
+    <header class="header">
+        <div class="header__top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-7">
+                        <div class="header__top__left">
+                            <p>Free shipping, 30-day return or refund guarantee.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-5">
+                        <div class="header__top__right">
+                            <div class="header__top__links">
+                                <a asp-area="Identity" asp-page="/Account/Login">Sign in</a>
+                                <a asp-area="Identity" asp-page="/Account/Register">Sign Up</a>
+                                <a asp-controller="dashboard" asp-action="Index">Admin</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__logo mt-0" style="max-width: 80%;">
+                        <a asp-controller="Home" asp-action="Index"><img
+                                src="@Url.Content("~/maintemplate/img/armani-logo-dark-4.png")" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <nav class="header__menu mobile-menu">
+                        <ul>
+                            <li class="active"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li><a asp-controller="Product" asp-action="Index">Woman</a></li>
+                            <li><a asp-controller="Home" asp-action="Index">About Us</a></li>
+                            <li><a asp-controller="Contact" asp-action="SendEmail">Contacts</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__nav__option">
+                        <a asp-action="Search" asp-controller="Product" class="search-switch"><img
+                                src="~/maintemplate/img/icon/search.png" alt=""></a>
+                        @* <a href="#"><img src="~/maintemplate/img/icon/heart.png" alt=""></a> *@
+
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            var userName = User.Identity?.Name;
+                            @* var user = await UserManager.FindByNameAsync(userName); *@
+                            var user = await UserManager.FindByNameAsync(userName);
+
+                            // Tìm thấy người dùng, tiếp tục xử lý.
+                            var firstname = user?.FirstName ?? "NA";
+                            var lastname = user?.LastName ?? "NA";
+                            var image = user?.Image ?? "NA";
+                            var ID = user?.Id ?? "NA";
+                            <a asp-controller="cart" asp-action="Index"><img src="~/maintemplate/img/icon/cart.png" alt="">
+                                <span id="cartItemCount"></span></a>
+                            <div class="price" id="cartItemTotal">$</div>
+                            <a asp-action="Index" asp-controller="Account" asp-route-userId="@ID" class="ml-1">
+                                <img src="@Url.Content(image)" alt="" class="rounded-circle"
+                                    style="width: 40px; height: 40px;">
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="cart" asp-action="Index"><img src="~/maintemplate/img/icon/cart.png" alt="">
+                                <span>0</span></a>
+                            <div class="price">$0.00</div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="canvas__open"><i class="fa fa-bars"></i></div>
+        </div>
+    </header>
+    <!-- Header Section End -->
+
+    @RenderBody()
+
+    <!-- Footer Section Begin -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-12">
+                    <div class="footer__about">
+                        <div class="footer__logo">
+                            <a asp-controller="Home" asp-action="Index"><img
+                                    src="~/admintemplate/vendors/images/emporio-armani-white.png"
+                                    style="max-width: 300px;" alt=""></a>
+                        </div>
+                        <p>The customer is at the heart of our unique business model, which includes design.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="footer__copyright__text">
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        <p>Copyright © Emporio Armani, 2023. Created by <a href="https://www.facebook.com/lg.min.2412/"
+                                target="_blank">杨志龙</a>
+                        </p>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer Section End -->
+
+
+    <!-- Js Plugins -->
+    <script src="~/maintemplate/js/jquery-3.3.1.min.js"></script>
+    <script src="~/maintemplate/js/bootstrap.min.js"></script>
+    <script src="~/maintemplate/js/jquery.nice-select.min.js"></script>
+    <script src="~/maintemplate/js/jquery.nicescroll.min.js"></script>
+    <script src="~/maintemplate/js/jquery.magnific-popup.min.js"></script>
+    <script src="~/maintemplate/js/jquery.countdown.min.js"></script>
+    <script src="~/maintemplate/js/jquery.slicknav.js"></script>
+    <script src="~/maintemplate/js/mixitup.min.js"></script>
+    <script src="~/maintemplate/js/owl.carousel.min.js"></script>
+    <script src="~/maintemplate/js/main.js"></script>
+    <!-- Slick Slider js -->
+    <script src="~/admintemplate/src/plugins/slick/slick.min.js"></script>
+    <!-- bootstrap-touchspin js -->
+    <script src="~/admintemplate/src/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+
+    <script src="~/admintemplate/src/plugins/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="~/admintemplate/src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
+
+    <script>
+        jQuery(document).ready(function () {
+            jQuery('.product-slider').slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                arrows: true,
+                infinite: true,
+                speed: 1000,
+                fade: true,
+                asNavFor: '.product-slider-nav'
+            });
+            jQuery('.product-slider-nav').slick({
+                slidesToShow: 3,
+                slidesToScroll: 1,
+                asNavFor: '.product-slider',
+                dots: false,
+                infinite: true,
+                arrows: false,
+                speed: 1000,
+                centerMode: true,
+                focusOnSelect: true
+            });
+            $("input[name='demo3_22']").TouchSpin({
+                initval: 1
+            });
+        });
+    </script>
+    <script>
+        // Hàm để lấy số lượng sản phẩm từ Local Storage
+        function getCartItemCount() {
+            return localStorage.getItem('cartItemCount') || 0;
+        }
+        // Gán giá trị vào span
+        $('#cartItemCount').text(getCartItemCount());
+    </script>
+    @* <script>
+    // Hàm để lấy số lượng sản phẩm từ Local Storage
+    function getCartItemTotal() {
+    return localStorage.getItem('cartItemTotal') || 0;
+    }
+    // Gán giá trị vào span
+    $('#cartItemTotal').text(getCartItemTotal());
+    </script> *@
+    <script>
+        // Hàm để lấy số lượng sản phẩm từ Local Storage
+        function getCartItemTotal() {
+            return localStorage.getItem('cartItemTotal') || 0;
+        }
+
+        // Gán giá trị vào span với định dạng USD
+        $('#cartItemTotal').text(Number(getCartItemTotal()).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

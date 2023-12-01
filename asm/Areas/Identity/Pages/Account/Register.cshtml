@@ -1,0 +1,309 @@
+﻿@page
+@model RegisterModel
+@if (User.IsInRole("Admin"))
+{
+    Layout = "/Views/Widgets/_admin_layout.cshtml";
+}
+else
+{
+    Layout = "/Views/Shared/_layout.cshtml";
+}
+
+
+
+@if (User.IsInRole("Admin"))
+{
+    <div class="main-container">
+    <div class="xs-pd-20-10 pd-ltr-20">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <!-- <div class="title">
+                        <h4>Product</h4>
+                    </div> -->
+                    <nav aria-label="breadcrumb" role="navigation">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a asp-action="Index">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Product</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class=" pd-20 card-box mb-30">
+            <div class="clearfix">
+                <div class="pull-left">
+                    <h4 class="text-blue h4">ADD NEW USER</h4>
+                </div>
+            </div>
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label>First Name</label>
+                        <input required class="form-control" asp-for="Input.FirstName" type="text" placeholder="First Name" >
+                        <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-6">
+                        <label>Last Name</label>
+                        <input asp-for="Input.LastName" required class="form-control" type="text" placeholder="Last Name">
+                        <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <label for="image">Image</label>
+                            <input asp-for="Input.File" type="file" id="images" required
+                                class="form-control-file form-control height-auto">
+                            <span asp-validation-for="Input.File" class="text-danger"></span>
+                            <div class="row text-center" id="image-preview">
+                                <div class="col-md-3">
+                                    <div class="image-container">
+                                        <span>Photo</span>
+                                        <img src="" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-9">
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input asp-for="Input.PhoneNumber" required class="form-control" type="text" placeholder="Phonenumber">
+                            <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input required class="form-control" value="" type="text"
+                                asp-for="Input.Email" autocomplete="username" aria-required="true" placeholder="name@example.com">
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6">
+                                <label>Password</label>
+                                <input required class="form-control" type="password" asp-for="Input.Password" autocomplete="new-password" aria-required="true"
+                                            placeholder="Password">
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-6">
+                                <label>Confirm Password</label>
+                                <input required class="form-control" type="password" asp-for="Input.ConfirmPassword" autocomplete="new-password" aria-required="true"
+                                            placeholder="Confirm Password">
+                                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-4">
+                        <label>Gender</label>
+                        <select asp-for="Input.Gender" class="selectpicker form-control" data-size="5" data-style="btn-outline-info">
+                            <option selected value="1">Male</option>
+                            <option value="2">Female</option>
+                        </select>
+                        <span asp-validation-for="Input.Status" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Status</label>
+                        <select asp-for="Input.Status" class="selectpicker form-control" data-size="5" data-style="btn-outline-info">
+                            <option selected value="1">Active</option>
+                            <option value="2">Lock</option>
+                        </select>
+                        <span asp-validation-for="Input.Status" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Roles</label>
+                        <select asp-for="Input.Role" class="selectpicker form-control" data-size="5"
+                            data-style="btn-outline-info" asp-items="@Model.Input.RolesList" aria-required="true">
+                            <option disabled selected> Select Role</option>
+                        </select>
+                        <span asp-validation-for="Input.Role" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group text-right">
+                    <a asp-action="Index" class="btn btn-secondary">Back</a>
+                    <input type="submit" value="Save" class="btn btn-primary pl-3" />
+                </div>
+            </form>
+        </div>
+        <div class="footer-wrap pd-20 mb-20 card-box">
+            Emporio Armani - Administrator By <a href="#" target="_blank">杨志龙</a>
+        </div>
+    </div>
+</div>
+}
+else
+{
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__text">
+                    <h4>SIGN UP</h4>
+                    <div class="breadcrumb__links">
+                        <a href="./index.html">Home</a>
+                        <span>SIGN UP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+    <!-- Register Section Begin -->
+<section class="checkout spad">
+    <div class="container">
+        <div class="checkout__form">
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="row row justify-content-center">
+                    <div class="col-lg-8 col-md-6">
+                        @if (!string.IsNullOrEmpty(ViewData["SuccessMessage"]?.ToString()))
+                        {
+                            <div class="alert alert-@ViewData["Type"].ToString()" role="alert">
+                                <strong>@ViewData["SuccessMessage"].ToString()</strong>
+                            </div>
+                        }
+                        <h6 class="coupon__code"><span class="icon_tag_alt"></span> Do have an account? <a
+                                asp-area="Identity" asp-page="/Account/Login">Click
+                                here</a> to Login</h6>
+                        <h6 class="checkout__title">Sign Up</h6>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>First Name<span>*</span></p>
+                                    <input asp-for="Input.FirstName" type="text" required placeholder="Your First Name">
+                                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Last Name<span>*</span></p>
+                                    <input asp-for="Input.LastName" type="text" required placeholder="Your Last Name">
+                                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Address<span>*</span></p>
+                            <input asp-for="Input.Address" type="text" placeholder="Street Address" class="checkout__input__add" required>
+                            <span asp-validation-for="Input.Address" class="text-danger"></span>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Town/City<span>*</span></p>
+                            <input asp-for="Input.City" type="text" required placeholder="Your Town/City">
+                            <span asp-validation-for="Input.City" class="text-danger"></span>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Country/State<span>*</span></p>
+                            <input asp-for="Input.Country" type="text" required placeholder="Your Country/State">
+                            <span asp-validation-for="Input.Country" class="text-danger"></span>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Postcode / ZIP<span>*</span></p>
+                            <input asp-for="Input.Postcode" type="text" required placeholder="Your Postcode / ZIP">
+                            <span asp-validation-for="Input.Postcode" class="text-danger"></span>
+                        </div>
+                        @* <div class="checkout__input">
+                            <p>Gender<span>*</span></p>
+                            <select asp-for="Input.Gender">
+                                <option selected value="1">Female</option>
+                                <option value="2">Male</option>
+                            </select>
+                            <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                        </div> *@
+                        <div class="row mb-3">
+                            <div class="checkout__input col-12">
+                                <select asp-for="Input.Gender" class="form-select" aria-required="true">
+                                    @* <option disabled selected> Select Gender</option> *@
+                                    <option selected value="1">Male</option>
+                                    <option value="2">Female</option>
+                                </select>
+                                <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Phone<span>*</span></p>
+                                    <input asp-for="Input.PhoneNumber" type="text" required placeholder="Your Phone">
+                                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Email<span>*</span></p>
+                                    <input asp-for="Input.Email" autocomplete="username" aria-required="true"
+                                        placeholder="Youremail@example.com" required/>
+                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Account Password<span>*</span></p>
+                            <input asp-for="Input.Password" autocomplete="new-password" aria-required="true"
+                                placeholder="Password" required />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Confirm Password<span>*</span></p>
+                            <input asp-for="Input.ConfirmPassword" autocomplete="new-password" aria-required="true"
+                                placeholder="Confirm Password" required />
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+                        <div class="checkout__input">
+                            <input type="hidden" asp-for="Input.Role" value="Customer" />
+                            <span asp-validation-for="Input.Role" class="text-danger"></span>
+
+                            <input type="hidden" asp-for="Input.Status" value="1" />
+                            <span asp-validation-for="Input.Status" class="text-danger"></span>
+                        </div>
+                        <div class="checkout__input">
+                            <label for="image">Image</label>
+                            <input asp-for="Input.File" type="file" id="images" required
+                                class="form-control-file form-control height-auto">
+                            <span asp-validation-for="Input.File" class="text-danger"></span>
+                            <div class="row text-center" id="image-preview">
+                                <div class="col-md-3">
+                                    <div class="image-container">
+                                        <img src="" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkout__input__checkbox text-right">
+                            <button id="login-submit" type="submit" class="site-btn">SIGN UP</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+    <!-- Register Section End -->
+}
+
+@section Scripts {
+        <script type="text/javascript">
+        $(document).ready(function () {
+            // Khi input chọn ảnh thay đổi
+            $("#images").change(function () {
+                $("#image-preview").html(""); // Xoá ảnh cũ
+                var total_files = $(this).get(0).files.length;
+                for (var i = 0; i < total_files; i++) {
+                    var file = $(this).get(0).files[i];
+                    if (file) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            $("#image-preview").append('<div class="col-md-3"><div class="image-container"><img src="' + e.target.result + '" alt="">');
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+        });
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}
