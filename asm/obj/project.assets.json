@@ -12161,11 +12161,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/gemwilson/Desktop/asm-armani/asm/asm/asm.csproj",
+      "projectUniqueName": "/Users/gemwilson/Desktop/Git/ClothingStore/asm/asm.csproj",
       "projectName": "asm",
-      "projectPath": "/Users/gemwilson/Desktop/asm-armani/asm/asm/asm.csproj",
+      "projectPath": "/Users/gemwilson/Desktop/Git/ClothingStore/asm/asm.csproj",
       "packagesPath": "/Users/gemwilson/.nuget/packages/",
-      "outputPath": "/Users/gemwilson/Desktop/asm-armani/asm/asm/obj/",
+      "outputPath": "/Users/gemwilson/Desktop/Git/ClothingStore/asm/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/gemwilson/.nuget/NuGet/NuGet.Config"

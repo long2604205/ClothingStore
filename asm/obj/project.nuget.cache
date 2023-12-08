@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/qVXpYxzGqvtIVkoSxFdGXttTCmBqvzqDlIEqMybTrNfGSqztxcsTkvjjnh4xqii04ntNR+VIlWEV6urDJWLQA==",
+  "dgSpecHash": "mEyyCndZZLj+b8gWfLMcez71VVtpJJRM5+gEwGboeo1Eb2tcqQC9rdpKBwSzd124jY2KoRj+hvSsh35zhbUYKA==",
   "success": true,
-  "projectFilePath": "/Users/gemwilson/Desktop/asm-armani/asm/asm/asm.csproj",
+  "projectFilePath": "/Users/gemwilson/Desktop/Git/ClothingStore/asm/asm.csproj",
   "expectedPackageFiles": [
     "/Users/gemwilson/.nuget/packages/azure.core/1.25.0/azure.core.1.25.0.nupkg.sha512",
     "/Users/gemwilson/.nuget/packages/azure.identity/1.7.0/azure.identity.1.7.0.nupkg.sha512",
